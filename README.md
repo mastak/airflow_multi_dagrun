@@ -67,6 +67,20 @@ chunk_handler = PythonOperator(
 )
 ```
 
+## Run example
+There is docker-compose config, so it requires next tools: `docker`, `docker-compose`
+1. `make run_containers` - start docker containers
+2. `make initdb` - create DB and fill in it
+
+The following commands are run in different terminal windows
+1. `make webserver` - start airflow webserver
+2. `make worker` - start airflow webserver
+3. `make run_containers` - start airflow webserver
+
+Open [airflow admin panel: http://127.0.0.1:8080/admin/](http://127.0.0.1:8080/admin/)
+ in browser
+
+
 ## Contributions
 If you have found a bug or have some idea for improvement feel free to create an issue
 or pull request.

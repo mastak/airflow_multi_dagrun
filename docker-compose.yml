@@ -1,0 +1,22 @@
+version: '2'
+services:
+  db:
+    image: postgres:10-alpine
+    command: postgres -c max_connections=300
+    environment:
+      PGPASSWORD: "airflow"
+      PGUSER: "airflow"
+      POSTGRES_PASSWORD: "airflow"
+      POSTGRES_USER: "airflow"
+      POSTGRES_DB: "airflow"
+    volumes:
+      - ./data/pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  rabbitmq:
+    image: rabbitmq:3.6-management-alpine
+    hostname: rmq-airflow
+    ports:
+      - "127.0.0.1:5672:5672"
+      - "127.0.0.1:15672:15672"

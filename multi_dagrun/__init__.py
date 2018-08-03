@@ -2,7 +2,7 @@ from __future__ import division, absolute_import, print_function
 
 from airflow.plugins_manager import AirflowPlugin
 
-from multi_dagrun import operators
+from . import operators
 
 
 class MultiDagRunPlugin(AirflowPlugin):
