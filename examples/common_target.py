@@ -1,23 +1,29 @@
-from datetime import datetime
+import time
+import logging
 
 from airflow.models import DAG
 from airflow.operators.python_operator import PythonOperator
+from airflow.utils.dates import days_ago
+
+logger = logging.getLogger(__name__)
 
 args = {
-    'start_date': datetime.utcnow(),
+    'start_date': days_ago(1),
     'owner': 'airflow',
 }
 
 
 dag = DAG(
-    dag_id='example_target_dag',
+    dag_id='common_target',
     default_args=args,
     schedule_interval=None
 )
 
 
 def run_this_func(dag_run, **kwargs):
-    print("Chunk received: {}".format(dag_run.conf['chunk']))
+    timeout = dag_run.conf['timeout']
+    logger.info("Chunk received: {}".format(timeout))
+    time.sleep(timeout)
 
 
 chunk_handler = PythonOperator(

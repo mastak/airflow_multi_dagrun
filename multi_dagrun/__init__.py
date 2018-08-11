@@ -9,5 +9,6 @@ class MultiDagRunPlugin(AirflowPlugin):
     name = "multi_dagrun"
     operators = [
         operators.TriggerMultiDagRunOperator,
-        operators.ExternalDagSensor,
+        operators.ExternalDagsSensor,
+        operators.MultiDagRunSensor,
     ]
