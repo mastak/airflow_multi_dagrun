@@ -26,22 +26,26 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
         session = settings.Session()
         created_dr_ids = []
         for dro in self.python_callable(*self.op_args, **self.op_kwargs):
-            if not dro or not isinstance(dro, DagRunOrder):
+            if not dro:
                 break
+            if not isinstance(dro, DagRunOrder):
+                dro = DagRunOrder(payload=dro)
 
+            now = datetime.utcnow()
             if dro.run_id is None:
-                dro.run_id = 'trig__' + datetime.utcnow().isoformat()
+                dro.run_id = 'trig__' + now.isoformat()
 
             dbag = DagBag(settings.DAGS_FOLDER)
             trigger_dag = dbag.get_dag(self.trigger_dag_id)
             dr = trigger_dag.create_dagrun(
                 run_id=dro.run_id,
+                execution_date=now,
                 state=State.RUNNING,
                 conf=dro.payload,
-                external_trigger=True
+                external_trigger=True,
             )
             created_dr_ids.append(dr.id)
-            self.log.info("Created DagRun %s", dr)
+            self.log.info("Created DagRun %s, %s", dr, now)
 
         if created_dr_ids:
             session.commit()
