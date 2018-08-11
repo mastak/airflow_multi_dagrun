@@ -1,2 +1,2 @@
 from .multi_dagrun import TriggerMultiDagRunOperator
-from .sensors import ExternalDagSensor
+from .sensors import ExternalDagsSensor, MultiDagRunSensor

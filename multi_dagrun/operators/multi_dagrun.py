@@ -8,17 +8,24 @@ from airflow.utils.state import State
 
 
 class TriggerMultiDagRunOperator(TriggerDagRunOperator):
+    CREATED_DAGRUN_KEY = 'created_dagrun_key'
 
     @apply_defaults
-    def __init__(self, op_args=None, op_kwargs=None, *args, **kwargs):
+    def __init__(self, op_args=None, op_kwargs=None,
+                 provide_context=None, *args, **kwargs):
         super(TriggerMultiDagRunOperator, self).__init__(*args, **kwargs)
         self.op_args = op_args or []
         self.op_kwargs = op_kwargs or {}
+        self.provide_context = provide_context
 
     def execute(self, context):
+        if self.provide_context:
+            context.update(self.op_kwargs)
+            self.op_kwargs = context
+
         session = settings.Session()
-        created = False
-        for dro in self.python_callable(context, *self.op_args, **self.op_kwargs):
+        created_dr_ids = []
+        for dro in self.python_callable(*self.op_args, **self.op_kwargs):
             if not dro or not isinstance(dro, DagRunOrder):
                 break
 
@@ -33,11 +40,12 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
                 conf=dro.payload,
                 external_trigger=True
             )
-            created = True
-            self.log.info("Creating DagRun %s", dr)
+            created_dr_ids.append(dr.id)
+            self.log.info("Created DagRun %s", dr)
 
-        if created is True:
+        if created_dr_ids:
             session.commit()
+            context['ti'].xcom_push(self.CREATED_DAGRUN_KEY, created_dr_ids)
         else:
             self.log.info("No DagRun created")
         session.close()
