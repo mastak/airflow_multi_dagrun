@@ -11,20 +11,16 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
 
     @apply_defaults
     def __init__(self, op_args=None, op_kwargs=None,
-                 provide_context=None, *args, **kwargs):
+                 *args, **kwargs):
         super(TriggerMultiDagRunOperator, self).__init__(*args, **kwargs)
         self.op_args = op_args or []
         self.op_kwargs = op_kwargs or {}
-        self.provide_context = provide_context
 
     def execute(self, context):
-        if self.provide_context:
-            context.update(self.op_kwargs)
-            self.op_kwargs = context
-
+        context.update(self.op_kwargs)
         session = settings.Session()
         created_dr_ids = []
-        for dro in self.python_callable(*self.op_args, **self.op_kwargs):
+        for dro in self.python_callable(*self.op_args, **context):
             if not dro:
                 break
             if not isinstance(dro, DagRunOrder):
