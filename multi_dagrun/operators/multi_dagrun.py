@@ -4,6 +4,7 @@ from airflow.operators.dagrun_operator import DagRunOrder, TriggerDagRunOperator
 from airflow.utils import timezone
 from airflow.utils.decorators import apply_defaults
 from airflow.utils.state import State
+from airflow.utils import timezone
 
 
 class TriggerMultiDagRunOperator(TriggerDagRunOperator):
