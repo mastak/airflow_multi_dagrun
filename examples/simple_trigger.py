@@ -1,11 +1,13 @@
+from airflow.operators.dagrun_operator import DagRunOrder
 from airflow.models import DAG
 from airflow.operators import TriggerMultiDagRunOperator
 from airflow.utils.dates import days_ago
 
 
 def generate_dag_run(**kwargs):
-    return [{'timeout': i} for i in range(10)]
-
+    for i in range(10):
+        order = DagRunOrder(payload={'my_variable': i})
+        yield order
 
 args = {
     'start_date': days_ago(1),
