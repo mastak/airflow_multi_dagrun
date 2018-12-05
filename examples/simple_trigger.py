@@ -25,6 +25,5 @@ gen_target_dag_run = TriggerMultiDagRunOperator(
     task_id='gen_target_dag_run',
     dag=dag,
     trigger_dag_id='common_target',
-    python_callable=generate_dag_run,
-    pass_context=True
+    python_callable=generate_dag_run
 )
