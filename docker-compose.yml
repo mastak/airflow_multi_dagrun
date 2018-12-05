@@ -1,22 +1,29 @@
-version: '2'
-services:
-  db:
-    image: postgres:10-alpine
-    command: postgres -c max_connections=300
-    environment:
-      PGPASSWORD: "airflow"
-      PGUSER: "airflow"
-      POSTGRES_PASSWORD: "airflow"
-      POSTGRES_USER: "airflow"
-      POSTGRES_DB: "airflow"
-    volumes:
-      - ./data/pgdata:/var/lib/postgresql/data
-    ports:
-      - "127.0.0.1:5432:5432"
+version: '2.1'
 
-  rabbitmq:
-    image: rabbitmq:3.6-management-alpine
-    hostname: rmq-airflow
+services:
+  postgres:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+
+  webserver:
+    image: puckel/docker-airflow:1.10.1
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      - LOAD_EX=n
+      - EXECUTOR=Local
+    volumes:
+      - ./examples:/usr/local/airflow/dags
+      - ./multi_dagrun:/usr/local/airflow/plugins/multi_dagrun
     ports:
-      - "127.0.0.1:5672:5672"
-      - "127.0.0.1:15672:15672"
+      - "8080:8080"
+    command: webserver
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+      interval: 30s
+      timeout: 30s
+      retries: 3

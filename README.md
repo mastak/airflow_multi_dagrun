@@ -20,7 +20,8 @@ from airflow.operators import TriggerMultiDagRunOperator
 from airflow.operators.dagrun_operator import DagRunOrder
 
 
-def generate_dag_run():
+def generate_dag_run(ds, **kwargs):
+    print(ds)  # access context properties, e.g. ds
     for i in range(100):
         yield DagRunOrder(payload={'index': i})
 
@@ -39,6 +40,7 @@ ran_dags = TriggerMultiDagRunOperator(
     dag=dag,
     trigger_dag_id='example_target_dag',
     python_callable=generate_dag_run,
+    pass_context=True
 )
 ```
 
@@ -68,18 +70,9 @@ chunk_handler = PythonOperator(
 ```
 
 ## Run example
-There is docker-compose config, so it requires next tools: `docker`, `docker-compose`
-1. `make run_containers` - start docker containers
-2. `make initdb` - create DB and fill in it
-
-The following commands are run in different terminal windows
-1. `make webserver` - start airflow webserver
-2. `make worker` - start airflow webserver
-3. `make run_containers` - start airflow webserver
-
-Open [airflow admin panel: http://127.0.0.1:8080/admin/](http://127.0.0.1:8080/admin/)
- in browser
-
+There is docker-compose config, so it requires docker to be installed: `docker`, `docker-compose`
+1. `docker-compose up/stop` - start/stop docker containers
+2. `docker-compose down` - destroy docker containers
 
 ## Contributions
 If you have found a bug or have some idea for improvement feel free to create an issue

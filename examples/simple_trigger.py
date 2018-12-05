@@ -3,7 +3,7 @@ from airflow.operators import TriggerMultiDagRunOperator
 from airflow.utils.dates import days_ago
 
 
-def generate_dag_run():
+def generate_dag_run(**kwargs):
     return [{'timeout': i} for i in range(10)]
 
 
@@ -26,4 +26,5 @@ gen_target_dag_run = TriggerMultiDagRunOperator(
     dag=dag,
     trigger_dag_id='common_target',
     python_callable=generate_dag_run,
+    pass_context=True
 )
