@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/flinz/airflow_multi_dagrun.svg?branch=master)](https://travis-ci.com/flinz/airflow_multi_dagrun)
+
 # Multi dag run
 
 This plugin contains operators for triggering a DAG run multiple times
