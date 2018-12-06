@@ -11,17 +11,27 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
     CREATED_DAGRUN_KEY = 'created_dagrun_key'
 
     @apply_defaults
-    def __init__(self, op_args=None, op_kwargs=None,
-                 *args, **kwargs):
+    def __init__(
+            self,
+            op_args=None,
+            op_kwargs=None,
+            provide_context=False,
+            *args,
+            **kwargs):
         super(TriggerMultiDagRunOperator, self).__init__(*args, **kwargs)
         self.op_args = op_args or []
         self.op_kwargs = op_kwargs or {}
+        self.provide_context = provide_context
 
     def execute(self, context):
-        context.update(self.op_kwargs)
+
+        if self.provide_context:
+            context.update(self.op_kwargs)
+            self.op_kwargs = context
+
         session = settings.Session()
         created_dr_ids = []
-        for dro in self.python_callable(*self.op_args, **context):
+        for dro in self.python_callable(*self.op_args, **self.op_kwargs):
             if not dro:
                 break
             if not isinstance(dro, DagRunOrder):
