@@ -1,4 +1,3 @@
-from airflow.operators.dagrun_operator import DagRunOrder
 from airflow.models import DAG
 from airflow.operators import TriggerMultiDagRunOperator
 from airflow.utils.dates import days_ago
@@ -6,7 +5,7 @@ from airflow.utils.dates import days_ago
 
 def generate_dag_run():
     """Callable can return only the payload for each dagrun"""
-    return [{'my_variable': i} for i in range(10)]
+    return [{'timeout': i} for i in range(10)]
 
 
 args = {
@@ -28,5 +27,4 @@ gen_target_dag_run = TriggerMultiDagRunOperator(
     dag=dag,
     trigger_dag_id='common_target',
     python_callable=generate_dag_run,
-    provide_context=False
 )

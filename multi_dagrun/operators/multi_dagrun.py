@@ -4,27 +4,20 @@ from airflow.operators.dagrun_operator import DagRunOrder, TriggerDagRunOperator
 from airflow.utils import timezone
 from airflow.utils.decorators import apply_defaults
 from airflow.utils.state import State
-from airflow.utils import timezone
 
 
 class TriggerMultiDagRunOperator(TriggerDagRunOperator):
     CREATED_DAGRUN_KEY = 'created_dagrun_key'
 
     @apply_defaults
-    def __init__(
-            self,
-            op_args=None,
-            op_kwargs=None,
-            provide_context=False,
-            *args,
-            **kwargs):
+    def __init__(self, op_args=None, op_kwargs=None,
+                 provide_context=False, *args, **kwargs):
         super(TriggerMultiDagRunOperator, self).__init__(*args, **kwargs)
         self.op_args = op_args or []
         self.op_kwargs = op_kwargs or {}
         self.provide_context = provide_context
 
     def execute(self, context):
-
         if self.provide_context:
             context.update(self.op_kwargs)
             self.op_kwargs = context

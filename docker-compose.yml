@@ -2,11 +2,13 @@ version: '2.1'
 
 services:
   postgres:
-    image: postgres:9.6
+    image: postgres:11-alpine
     environment:
-      - POSTGRES_USER=airflow
-      - POSTGRES_PASSWORD=airflow
-      - POSTGRES_DB=airflow
+      PGPASSWORD: "airflow"
+      PGUSER: "airflow"
+      POSTGRES_PASSWORD: "airflow"
+      POSTGRES_USER: "airflow"
+      POSTGRES_DB: "airflow"
 
   webserver:
     image: puckel/docker-airflow:1.10.1
@@ -14,8 +16,8 @@ services:
     depends_on:
       - postgres
     environment:
-      - LOAD_EX=n
-      - EXECUTOR=Local
+      LOAD_EX: n
+      EXECUTOR: Local
     volumes:
       - ./examples:/usr/local/airflow/dags
       - ./multi_dagrun:/usr/local/airflow/plugins/multi_dagrun

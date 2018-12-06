@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/flinz/airflow_multi_dagrun.svg?branch=master)](https://travis-ci.com/flinz/airflow_multi_dagrun)
+[![Build Status](https://travis-ci.com/mastak/airflow_multi_dagrun.svg?branch=master)](https://travis-ci.com/mastak/airflow_multi_dagrun)
 
 # Multi dag run
 
@@ -22,8 +22,7 @@ from airflow.operators import TriggerMultiDagRunOperator
 from airflow.operators.dagrun_operator import DagRunOrder
 
 
-def generate_dag_run(ds, **kwargs):
-    print(ds)  # access context properties, e.g. ds
+def generate_dag_run():
     for i in range(100):
         yield DagRunOrder(payload={'index': i})
 
@@ -42,7 +41,6 @@ ran_dags = TriggerMultiDagRunOperator(
     dag=dag,
     trigger_dag_id='example_target_dag',
     python_callable=generate_dag_run,
-    pass_context=True
 )
 ```
 
