@@ -71,8 +71,8 @@ chunk_handler = PythonOperator(
 
 ## Run example
 There is docker-compose config, so it requires docker to be installed: `docker`, `docker-compose`
-1. `docker-compose up/stop` - start/stop docker containers
-2. `docker-compose down` - destroy docker containers
+1. `make run` - start docker containers, init db, run airflow webserver
+2. `make down` - destroy docker containers
 
 ## Contributions
 If you have found a bug or have some idea for improvement feel free to create an issue
