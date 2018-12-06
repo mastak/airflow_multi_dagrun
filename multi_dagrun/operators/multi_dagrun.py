@@ -1,9 +1,13 @@
 from airflow import settings
 from airflow.models import DagBag
 from airflow.operators.dagrun_operator import DagRunOrder, TriggerDagRunOperator
-from airflow.utils import timezone
 from airflow.utils.decorators import apply_defaults
 from airflow.utils.state import State
+
+try:
+    from airflow.utils import timezone as dt
+except ImportError:
+    from datetime import datetime as dt
 
 
 class TriggerMultiDagRunOperator(TriggerDagRunOperator):
@@ -30,7 +34,7 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
             if not isinstance(dro, DagRunOrder):
                 dro = DagRunOrder(payload=dro)
 
-            now = timezone.utcnow()
+            now = dt.utcnow()
             if dro.run_id is None:
                 dro.run_id = 'trig__' + now.isoformat()
 

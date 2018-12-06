@@ -6,6 +6,10 @@ services:
 install:
   - "pip install flake8"
 
+env:
+  - AIRFLOW_VERSION=1.10.1
+  - AIRFLOW_VERSION=1.9.0-4
+
 script:
   - flake8
   - make test

@@ -5,7 +5,7 @@ init:
 	docker-compose run --rm webserver airflow initdb
 
 run: init
-	docker-compose up -d
+	docker-compose up webserver
 
 test: init
 	docker-compose run --rm webserver airflow test simple_trigger gen_target_dag_run 20000101
