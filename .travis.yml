@@ -3,5 +3,9 @@ language: python
 services:
   - docker
 
+install:
+  - "pip install flake8"
+
 script:
+  - flake8
   - make test
