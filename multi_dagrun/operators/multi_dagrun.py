@@ -11,7 +11,7 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
 
     @apply_defaults
     def __init__(self, op_args=None, op_kwargs=None,
-                 provide_context=None, *args, **kwargs):
+                 provide_context=False, *args, **kwargs):
         super(TriggerMultiDagRunOperator, self).__init__(*args, **kwargs)
         self.op_args = op_args or []
         self.op_kwargs = op_kwargs or {}
