@@ -11,7 +11,7 @@ services:
       POSTGRES_DB: "airflow"
 
   webserver:
-    image: puckel/docker-airflow:${AIRFLOW_VERSION:-1.10.1}
+    image: mastak/airflow:${AIRFLOW_VERSION:-1.10.1}
     restart: always
     depends_on:
       - postgres
@@ -20,7 +20,7 @@ services:
       EXECUTOR: Local
     volumes:
       - ./examples:/usr/local/airflow/dags
-      - ./multi_dagrun:/usr/local/airflow/plugins/multi_dagrun
+      - ./airflow_multi_dagrun:/usr/local/airflow/plugins/multi_dagrun
     ports:
       - "8080:8080"
     command: webserver

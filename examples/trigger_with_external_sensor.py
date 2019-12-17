@@ -1,6 +1,7 @@
 from airflow.models import DAG
-from airflow.operators import TriggerMultiDagRunOperator, ExternalDagsSensor
 from airflow.operators.dagrun_operator import DagRunOrder
+from airflow.operators.multi_dagrun import (TriggerMultiDagRunOperator,
+                                            ExternalDagsSensor)
 from airflow.utils.dates import days_ago
 
 

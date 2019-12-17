@@ -11,6 +11,12 @@ into chunks and run multiple instances of the same task in parallel.
 When you see a lot launched target DAGs you can set up more workers.
 So this makes it pretty easy to scale.
 
+## Install
+
+```bash
+pip install airflow_multi_dagrun
+```
+
 ## Example
 
 Code for scheduling dags
@@ -18,8 +24,8 @@ Code for scheduling dags
 ```python
 import datetime as dt
 from airflow import DAG
-from airflow.operators import TriggerMultiDagRunOperator
 from airflow.operators.dagrun_operator import DagRunOrder
+from airflow.operators.multi_dagrun import TriggerMultiDagRunOperator
 
 
 def generate_dag_run():
