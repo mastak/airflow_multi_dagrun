@@ -14,3 +14,9 @@ test: init
 
 down:
 	docker-compose down
+
+clean_wheels:
+	rm -rf ./dist/*
+
+build_wheels: clean_wheels
+	python3 setup.py bdist_wheel
