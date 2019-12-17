@@ -10,7 +10,6 @@ env:
   - AIRFLOW_VERSION=1.10.6
   - AIRFLOW_VERSION=1.10.5
   - AIRFLOW_VERSION=1.10.4
-  - AIRFLOW_VERSION=1.10.3
 
 script:
   - flake8
