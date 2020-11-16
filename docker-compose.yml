@@ -11,7 +11,7 @@ services:
       POSTGRES_DB: "airflow"
 
   webserver:
-    image: mastak/airflow:${AIRFLOW_VERSION:-1.10.1}
+    image: mastak/airflow:${AIRFLOW_VERSION:-1.10.10}
     restart: always
     depends_on:
       - postgres
