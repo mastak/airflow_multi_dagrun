@@ -1,6 +1,7 @@
 from airflow.models import DAG
-from airflow.operators.multi_dagrun import TriggerMultiDagRunOperator
 from airflow.utils.dates import days_ago
+
+from airflow_multi_dagrun.operators import TriggerMultiDagRunOperator
 
 
 def generate_dag_run():
@@ -13,14 +14,12 @@ args = {
     'owner': 'airflow',
 }
 
-
 dag = DAG(
     dag_id='simple_trigger',
     max_active_runs=1,
     schedule_interval='@hourly',
     default_args=args,
 )
-
 
 gen_target_dag_run = TriggerMultiDagRunOperator(
     task_id='gen_target_dag_run',

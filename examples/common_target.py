@@ -1,8 +1,8 @@
-import time
 import logging
+import time
 
 from airflow.models import DAG
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 
 logger = logging.getLogger(__name__)
@@ -11,7 +11,6 @@ args = {
     'start_date': days_ago(1),
     'owner': 'airflow',
 }
-
 
 dag = DAG(
     dag_id='common_target',
