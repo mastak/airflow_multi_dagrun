@@ -30,3 +30,8 @@ add-admin: init
           --lastname LAST_NAME \
           --role Admin \
           --email admin@example.org
+
+release:
+	pip install twine
+	python setup.py sdist
+	twine upload dist/*
