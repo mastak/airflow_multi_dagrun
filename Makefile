@@ -22,3 +22,11 @@ clean_wheels:
 
 build_wheels: clean_wheels
 	python3 setup.py bdist_wheel
+
+add-admin: init
+	docker-compose run --rm webserver airflow users create \
+          --username admin \
+          --firstname FIRST_NAME \
+          --lastname LAST_NAME \
+          --role Admin \
+          --email admin@example.org
