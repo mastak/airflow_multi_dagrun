@@ -4,8 +4,11 @@ init:
 	docker-compose up -d postgres
 	docker-compose run --rm webserver airflow db init
 
-run: init
+web: init
 	docker-compose up webserver
+
+scheduler:
+	docker-compose up scheduler
 
 test: init
 	docker-compose run --rm webserver airflow tasks test tutorial
@@ -31,7 +34,7 @@ add-admin: init
           --role Admin \
           --email admin@example.org
 
-release:
+release: build_wheels
 	pip install twine
 	python setup.py sdist
 	twine upload dist/*

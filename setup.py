@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='airflow_multi_dagrun',
-    version='2.0.0-dev',
+    version='2.0.0',
     description='MultiDagRunPlugin for airflow',
     python_requires='>=3.6.0',
     author='Ihor Liubymov',

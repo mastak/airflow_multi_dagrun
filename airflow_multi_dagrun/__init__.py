@@ -1,0 +1,2 @@
+class MultiDagRunPlugin:
+    name = 'MultiDagRunPlugin'
