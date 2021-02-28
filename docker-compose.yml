@@ -3,6 +3,8 @@ version: '2.1'
 services:
   postgres:
     image: postgres:11-alpine
+    ports:
+      - "5432:5432"
     environment:
       PGPASSWORD: "airflow"
       PGUSER: "airflow"
@@ -11,7 +13,7 @@ services:
       POSTGRES_DB: "airflow"
 
   webserver:
-    image: mastak/airflow:${AIRFLOW_VERSION:-1.10.10}
+    image: mastak/airflow:${AIRFLOW_VERSION:-2.0.1}
     restart: always
     depends_on:
       - postgres
@@ -24,7 +26,7 @@ services:
       POSTGRES_DB: airflow
     volumes:
       - ./examples:/usr/local/airflow/dags
-      - ./airflow_multi_dagrun:/usr/local/airflow/plugins/multi_dagrun
+      - ./airflow_multi_dagrun:/usr/local/airflow/plugins/airflow_multi_dagrun
     ports:
       - "8080:8080"
     command: webserver
@@ -35,14 +37,14 @@ services:
       retries: 3
 
   scheduler:
-    image: mastak/airflow:${AIRFLOW_VERSION:-1.10.10}
+    image: mastak/airflow:${AIRFLOW_VERSION:-2.0.1}
     restart: always
     depends_on:
       - postgres
       - webserver
     volumes:
       - ./examples:/usr/local/airflow/dags
-      - ./airflow_multi_dagrun:/usr/local/airflow/plugins/multi_dagrun
+      - ./airflow_multi_dagrun:/usr/local/airflow/plugins/airflow_multi_dagrun
     environment:
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres:5432/airflow
       POSTGRES_USER: airflow

@@ -24,13 +24,13 @@ Code for scheduling dags
 ```python
 import datetime as dt
 from airflow import DAG
-from airflow.operators.dagrun_operator import DagRunOrder
-from airflow.operators.multi_dagrun import TriggerMultiDagRunOperator
+
+from airflow_multi_dagrun.operators import TriggerMultiDagRunOperator
 
 
 def generate_dag_run():
     for i in range(100):
-        yield DagRunOrder(payload={'index': i})
+        yield {'index': i}
 
 
 default_args = {
@@ -77,8 +77,12 @@ chunk_handler = PythonOperator(
 
 ## Run example
 There is docker-compose config, so it requires docker to be installed: `docker`, `docker-compose`
-1. `make run` - start docker containers, init db, run airflow webserver
-2. `make down` - destroy docker containers
+1. `make init` - create db
+2. `make add-admin` - create `admin` user (is asks a password)
+3. `make web` - start docker containers, run airflow webserver
+4. `make scheduler` - start docker containers, run airflow scheduler
+
+`make down` will stop and remove docker containers 
 
 ## Contributions
 If you have found a bug or have some idea for improvement feel free to create an issue

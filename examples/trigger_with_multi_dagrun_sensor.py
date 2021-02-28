@@ -1,13 +1,13 @@
 from airflow.models import DAG
-from airflow.operators.dagrun_operator import DagRunOrder
-from airflow.operators.multi_dagrun import (TriggerMultiDagRunOperator,
-                                            MultiDagRunSensor)
-from airflow.operators.python_operator import PythonOperator
+from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
+
+from airflow_multi_dagrun.operators import TriggerMultiDagRunOperator
+from airflow_multi_dagrun.sensors import MultiDagRunSensor
 
 
 def generate_dag_run():
-    return [DagRunOrder(payload={'timeout': i}) for i in range(10)]
+    return [{'timeout': i} for i in range(10)]
 
 
 def after_dags_handler():
@@ -19,14 +19,12 @@ args = {
     'owner': 'airflow',
 }
 
-
 dag = DAG(
     dag_id='trigger_with_multi_dagrun_sensor',
     max_active_runs=1,
     schedule_interval='@hourly',
     default_args=args,
 )
-
 
 gen_target_dag_run = TriggerMultiDagRunOperator(
     task_id='gen_target_dag_run',
@@ -35,14 +33,12 @@ gen_target_dag_run = TriggerMultiDagRunOperator(
     python_callable=generate_dag_run,
 )
 
-
 # Wait until there is no running instance of target DAG
 wait_target_dag = MultiDagRunSensor(
     task_id='wait_target_dag',
     dag=dag
 )
 wait_target_dag.set_upstream(gen_target_dag_run)
-
 
 after_dags_handler_op = PythonOperator(
     task_id='after_dags_handler',

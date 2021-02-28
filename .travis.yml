@@ -7,8 +7,7 @@ install:
   - "pip install flake8"
 
 env:
-  - AIRFLOW_VERSION=1.10.10
-  - AIRFLOW_VERSION=1.10.6
+  - AIRFLOW_VERSION=2.0.1
 
 script:
   - flake8

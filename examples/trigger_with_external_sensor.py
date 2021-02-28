@@ -1,19 +1,18 @@
 from airflow.models import DAG
-from airflow.operators.dagrun_operator import DagRunOrder
-from airflow.operators.multi_dagrun import (TriggerMultiDagRunOperator,
-                                            ExternalDagsSensor)
 from airflow.utils.dates import days_ago
+
+from airflow_multi_dagrun.operators import TriggerMultiDagRunOperator
+from airflow_multi_dagrun.sensors import ExternalDagsSensor
 
 
 def generate_dag_run():
-    return [DagRunOrder(payload={'timeout': i}) for i in range(10)]
+    return [{'timeout': i} for i in range(10)]
 
 
 args = {
     'start_date': days_ago(1),
     'owner': 'airflow',
 }
-
 
 dag = DAG(
     dag_id='trigger_with_external_sensor',
@@ -22,7 +21,6 @@ dag = DAG(
     default_args=args,
 )
 
-
 # Wait until there is no running instance of target DAG
 wait_target_dag = ExternalDagsSensor(
     task_id='wait_target_dag',
@@ -30,7 +28,6 @@ wait_target_dag = ExternalDagsSensor(
     external_dag_id='common_target',
     dag=dag
 )
-
 
 gen_target_dag_run = TriggerMultiDagRunOperator(
     task_id='gen_target_dag_run',

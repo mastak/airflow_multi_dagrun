@@ -1,13 +1,13 @@
 from airflow.models import DAG
-from airflow.operators.dagrun_operator import DagRunOrder
-from airflow.operators.multi_dagrun import TriggerMultiDagRunOperator
 from airflow.utils.dates import days_ago
+
+from airflow_multi_dagrun.operators import TriggerMultiDagRunOperator
 
 
 def generate_dag_run():
     """Callable can return explicit DagRuns"""
     for i in range(10):
-        yield DagRunOrder(payload={'timeout': i})
+        yield {'timeout': i}
 
 
 args = {
@@ -15,14 +15,12 @@ args = {
     'owner': 'airflow',
 }
 
-
 dag = DAG(
     dag_id='simple_trigger_returning_dagrun',
     max_active_runs=1,
     schedule_interval='@hourly',
     default_args=args,
 )
-
 
 gen_target_dag_run = TriggerMultiDagRunOperator(
     task_id='gen_target_dag_run',
