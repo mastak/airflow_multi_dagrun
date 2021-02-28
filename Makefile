@@ -11,7 +11,6 @@ scheduler:
 	docker-compose up scheduler
 
 test: init
-	docker-compose run --rm webserver airflow tasks test tutorial
 	docker-compose run --rm webserver airflow tasks test simple_trigger gen_target_dag_run 20000101
 	docker-compose run --rm webserver airflow tasks test simple_trigger_returning_dagrun gen_target_dag_run 20000101
 	docker-compose run --rm webserver airflow tasks test simple_trigger_with_context gen_target_dag_run 20000101
