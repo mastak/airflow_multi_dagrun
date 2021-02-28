@@ -8,8 +8,6 @@ install:
 
 env:
   - AIRFLOW_VERSION=2.0.1
-  - AIRFLOW_VERSION=1.10.10
-  - AIRFLOW_VERSION=1.10.6
 
 script:
   - flake8
