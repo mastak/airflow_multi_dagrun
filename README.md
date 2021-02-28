@@ -79,7 +79,8 @@ chunk_handler = PythonOperator(
 There is docker-compose config, so it requires docker to be installed: `docker`, `docker-compose`
 1. `make init` - create db
 2. `make add-admin` - create `admin` user (is asks a password)
-3. `make run` - start docker containers, run airflow webserver
+3. `make web` - start docker containers, run airflow webserver
+4. `make scheduler` - start docker containers, run airflow scheduler
 
 `make down` will stop and remove docker containers 
 
