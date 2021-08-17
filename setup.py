@@ -1,11 +1,13 @@
 from setuptools import setup
 
+from airflow_multi_dagrun import version
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
     name='airflow_multi_dagrun',
-    version='2.0.0',
+    version=version,
     description='MultiDagRunPlugin for airflow',
     python_requires='>=3.6.0',
     author='Ihor Liubymov',
