@@ -4,7 +4,6 @@ from airflow.api.common.experimental.trigger_dag import trigger_dag
 from airflow.models import DagRun
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils import timezone
-from airflow.utils.decorators import apply_defaults
 from airflow.utils.operator_helpers import determine_kwargs
 from airflow.utils.session import provide_session
 from airflow.utils.types import DagRunType
@@ -13,7 +12,6 @@ from airflow.utils.types import DagRunType
 class TriggerMultiDagRunOperator(TriggerDagRunOperator):
     CREATED_DAGRUN_KEY = 'created_dagrun_key'
 
-    @apply_defaults
     def __init__(self, op_args=None, op_kwargs=None, python_callable=None,
                  *args, **kwargs):
         super(TriggerMultiDagRunOperator, self).__init__(*args, **kwargs)
