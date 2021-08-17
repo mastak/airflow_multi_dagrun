@@ -30,5 +30,4 @@ gen_target_dag_run = TriggerMultiDagRunOperator(
     dag=dag,
     trigger_dag_id='common_target',
     python_callable=generate_dag_run,
-    provide_context=True
 )
