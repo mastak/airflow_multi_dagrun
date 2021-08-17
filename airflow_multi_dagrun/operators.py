@@ -12,8 +12,7 @@ from airflow.utils.types import DagRunType
 class TriggerMultiDagRunOperator(TriggerDagRunOperator):
     CREATED_DAGRUN_KEY = 'created_dagrun_key'
 
-    def __init__(self, op_args=None, op_kwargs=None, python_callable=None,
-                 *args, **kwargs):
+    def __init__(self, op_args=None, op_kwargs=None, python_callable=None, *args, **kwargs):
         super(TriggerMultiDagRunOperator, self).__init__(*args, **kwargs)
         self.op_args = op_args or []
         self.op_kwargs = op_kwargs or {}
@@ -30,7 +29,10 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
                 break
 
             execution_date = timezone.utcnow()
-            run_id = DagRun.generate_run_id(DagRunType.MANUAL, execution_date)
+
+            run_id = conf.get('run_id')
+            if not run_id:
+                run_id = DagRun.generate_run_id(DagRunType.MANUAL, execution_date)
 
             dag_run = trigger_dag(
                 dag_id=self.trigger_dag_id,
