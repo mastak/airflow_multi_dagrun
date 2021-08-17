@@ -1,6 +1,5 @@
 from airflow.models import DagRun
 from airflow.sensors.base import BaseSensorOperator
-from airflow.utils.decorators import apply_defaults
 from airflow.utils.session import provide_session
 from airflow.utils.state import State
 
@@ -18,7 +17,6 @@ class ExternalDagsSensor(BaseSensorOperator):
     """
     ui_color = '#19647e'
 
-    @apply_defaults
     def __init__(self, external_dag_id, instances_limit=0, *args, **kwargs):
         super(ExternalDagsSensor, self).__init__(*args, **kwargs)
         self._waited_states = [State.RUNNING]
@@ -43,7 +41,6 @@ class MultiDagRunSensor(BaseSensorOperator):
     """
     CREATED_DAGRUN_KEY = 'created_dagrun_key'
 
-    @apply_defaults
     def __init__(self, dagrun_finished_states=None, *args, **kwargs):
         super(MultiDagRunSensor, self).__init__(*args, **kwargs)
         if dagrun_finished_states is None:

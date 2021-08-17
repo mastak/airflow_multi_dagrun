@@ -27,7 +27,6 @@ def run_this_func(dag_run, **kwargs):
 
 chunk_handler = PythonOperator(
     task_id='chunk_handler',
-    provide_context=True,
     python_callable=run_this_func,
     dag=dag
 )
