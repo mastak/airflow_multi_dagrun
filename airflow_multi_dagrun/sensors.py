@@ -41,15 +41,20 @@ class MultiDagRunSensor(BaseSensorOperator):
     """
     CREATED_DAGRUN_KEY = 'created_dagrun_key'
 
-    def __init__(self, dagrun_finished_states=None, *args, **kwargs):
+    def __init__(self, dagrun_finished_states=None, dagrun_key=None, *args, **kwargs):
         super(MultiDagRunSensor, self).__init__(*args, **kwargs)
         if dagrun_finished_states is None:
             dagrun_finished_states = [State.SUCCESS, State.FAILED]
+        if dagrun_key is None:
+            self.dagrun_key = self.CREATED_DAGRUN_KEY
+        else:
+            self.dagrun_key = dagrun_key
+
         self._dagrun_finished_states = dagrun_finished_states
 
     @provide_session
     def poke(self, context, session=None):
-        xcom_key = self.CREATED_DAGRUN_KEY
+        xcom_key = self.dagrun_key
         dagrun_ids = context['ti'].xcom_pull(task_ids=None, key=xcom_key)
         if not dagrun_ids:
             return True
