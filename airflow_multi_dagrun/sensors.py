@@ -55,6 +55,8 @@ class MultiDagRunSensor(BaseSensorOperator):
     @provide_session
     def poke(self, context, session=None):
         xcom_key = self.dagrun_key
+        self.log.debug("DagRun xcom key: %s", self.dagrun_key)
+
         dagrun_ids = context['ti'].xcom_pull(task_ids=None, key=xcom_key)
         if not dagrun_ids:
             return True

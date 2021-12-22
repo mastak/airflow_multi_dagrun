@@ -51,6 +51,8 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
             created_dr_ids.append(dag_run.id)
             self.log.info("Created DagRun %s, %s - %s", dag_run, self.trigger_dag_id, run_id)
 
+        self.log.debug("DagRun xcom key: %s", self.dagrun_key)
+
         if created_dr_ids:
             context['ti'].xcom_push(self.dagrun_key, created_dr_ids)
         else:
