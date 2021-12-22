@@ -20,6 +20,9 @@ dag = DAG(
 
 
 def run_this_func(dag_run, **kwargs):
+    if dag_run.conf.get('raise_error'):
+        raise Exception('Fail execution')
+
     timeout = dag_run.conf['timeout']
     logger.info("Chunk received: {}".format(timeout))
     time.sleep(timeout)

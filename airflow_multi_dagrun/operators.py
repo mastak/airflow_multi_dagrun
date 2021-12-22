@@ -8,9 +8,10 @@ from airflow.utils.operator_helpers import determine_kwargs
 from airflow.utils.session import provide_session
 from airflow.utils.types import DagRunType
 
+from airflow_multi_dagrun.utils import get_multi_dag_run_xcom_key
+
 
 class TriggerMultiDagRunOperator(TriggerDagRunOperator):
-    CREATED_DAGRUN_KEY = 'created_dagrun_key'
 
     def __init__(self, op_args=None, op_kwargs=None, python_callable=None, *args, **kwargs):
         super(TriggerMultiDagRunOperator, self).__init__(*args, **kwargs)
@@ -46,6 +47,8 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
             self.log.info("Created DagRun %s, %s - %s", dag_run, self.trigger_dag_id, run_id)
 
         if created_dr_ids:
-            context['ti'].xcom_push(self.CREATED_DAGRUN_KEY, created_dr_ids)
+            xcom_key = get_multi_dag_run_xcom_key(context['execution_date'])
+            context['ti'].xcom_push(xcom_key, created_dr_ids)
+            self.log.info("Pushed %s DagRun's ids with key %s", len(created_dr_ids), xcom_key)
         else:
             self.log.info("No DagRuns created")
