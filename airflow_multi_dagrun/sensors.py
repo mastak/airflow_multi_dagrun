@@ -1,7 +1,11 @@
+from itertools import chain
+
 from airflow.models import DagRun
 from airflow.sensors.base import BaseSensorOperator
 from airflow.utils.session import provide_session
 from airflow.utils.state import State
+
+from airflow_multi_dagrun.utils import get_multi_dag_run_xcom_key
 
 
 class ExternalDagsSensor(BaseSensorOperator):
@@ -39,7 +43,6 @@ class MultiDagRunSensor(BaseSensorOperator):
     Waits until all DAGs created by TriggerMultiDagRunOperator(in current execution)
     will be finished.
     """
-    CREATED_DAGRUN_KEY = 'created_dagrun_key'
 
     def __init__(self, dagrun_finished_states=None, *args, **kwargs):
         super(MultiDagRunSensor, self).__init__(*args, **kwargs)
@@ -49,8 +52,12 @@ class MultiDagRunSensor(BaseSensorOperator):
 
     @provide_session
     def poke(self, context, session=None):
-        xcom_key = self.CREATED_DAGRUN_KEY
-        dagrun_ids = context['ti'].xcom_pull(task_ids=None, key=xcom_key)
+        xcom_key = get_multi_dag_run_xcom_key(context['execution_date'])
+        dagrun_ids = context['ti'].xcom_pull(task_ids=context["task"].upstream_task_ids,
+                                             key=xcom_key)
+        dagrun_ids = list(chain.from_iterable(dagrun_ids))
+
+        self.log.info("Loaded dagrun ids: %s, for task: %s", dagrun_ids, xcom_key)
         if not dagrun_ids:
             return True
 
@@ -59,5 +66,5 @@ class MultiDagRunSensor(BaseSensorOperator):
             DagRun.state.in_(self._dagrun_finished_states),
         ).count()
         total_count = len(dagrun_ids)
-        self.log.info('Poking for dagruns, finished {} / {}'.format(finished_count, total_count))
+        self.log.info('Poking for dagruns, finished %s / %s', finished_count, total_count)
         return finished_count >= total_count
