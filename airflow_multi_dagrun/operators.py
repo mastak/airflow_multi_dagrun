@@ -35,16 +35,21 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
             if not run_id:
                 run_id = DagRun.generate_run_id(DagRunType.MANUAL, execution_date)
 
-            dag_run = trigger_dag(
-                dag_id=self.trigger_dag_id,
-                run_id=run_id,
-                conf=conf,
-                execution_date=execution_date,
-                replace_microseconds=False,
-            )
+            dag_run = DagRun.find(dag_id=self.trigger_dag_id, run_id=run_id)
+            if not dag_run:
+                dag_run = trigger_dag(
+                    dag_id=self.trigger_dag_id,
+                    run_id=run_id,
+                    conf=conf,
+                    execution_date=execution_date,
+                    replace_microseconds=False,
+                )
+                self.log.info("Created DagRun %s, %s - %s", dag_run, self.trigger_dag_id, run_id)
+            else:
+                dag_run = dag_run[0]
+                self.log.warning("Fetched existed DagRun %s, %s - %s", dag_run, self.trigger_dag_id, run_id)
 
             created_dr_ids.append(dag_run.id)
-            self.log.info("Created DagRun %s, %s - %s", dag_run, self.trigger_dag_id, run_id)
 
         if created_dr_ids:
             xcom_key = get_multi_dag_run_xcom_key(context['execution_date'])
