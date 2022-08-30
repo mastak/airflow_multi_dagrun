@@ -1,4 +1,17 @@
-[![Build Status](https://travis-ci.com/mastak/airflow_multi_dagrun.svg?branch=master)](https://travis-ci.com/mastak/airflow_multi_dagrun)
+[![Build Status](https://travis-ci.com/mastak/airflow_multi_dagrun.svg?branch=master)](https://travis-ci.com/mastak/airflow_multi_dagrun) [![Support Ukraine Badge](https://bit.ly/support-ukraine-now)](https://github.com/support-ukraine/support-ukraine)
+
+
+## ======== Help Ukraine
+```
+Russo-Ukrainian War which started in Feb 2014 and escalated since 8 years into 
+a full-scale war against Ukraine on 24th of February, 
+became a top cause in the international main stream nowadays.
+```
+[Save Life](https://savelife.in.ua/donate/) – NGO that crowdfunds non-lethal military equipment, such as thermal vision scopes & supplies it to the front lines. It also provides training for Ukrainian soldiers, as well as researching troops’ needs and social reintegration of veterans.
+
+[Hospitallers](https://www.facebook.com/hospitallers/) – a medical battalion that unites volunteer paramedics and doctors to save the lives of soldiers on the frontline. They crowdfund their vehicle repairs, fuel, and medical equipment.
+## ========
+
 
 # Multi dag run
 
