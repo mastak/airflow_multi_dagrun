@@ -16,7 +16,7 @@ args = {
 }
 
 dag = DAG(
-    dag_id='simple_trigger_returning_dagrun',
+    dag_id='trigger_returning_dagrun',
     max_active_runs=1,
     schedule_interval='@hourly',
     default_args=args,

@@ -19,7 +19,7 @@ args = {
 }
 
 dag = DAG(
-    dag_id='simple_trigger_with_context',
+    dag_id='trigger_with_context',
     max_active_runs=1,
     schedule_interval='@hourly',
     default_args=args,

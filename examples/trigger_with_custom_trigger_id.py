@@ -1,5 +1,4 @@
 from airflow.models import DAG
-from airflow.utils import timezone
 from airflow.utils.dates import days_ago
 
 from airflow_multi_dagrun.operators import TriggerMultiDagRunOperator
@@ -9,7 +8,7 @@ def generate_dag_run(**context):
     """Callable can depend on the context"""
     for i in range(2):
         yield {
-            'run_id': f"custom_trigger_id___{timezone.utcnow().isoformat()}",
+            'run_id': f"custom_trigger_id___{context['ts']}_{i}",
             'timeout': i,
             'ds': context["ds"],
         }
@@ -21,7 +20,7 @@ args = {
 }
 
 dag = DAG(
-    dag_id='simple_trigger_with_custom_run_id',
+    dag_id='trigger_with_custom_trigger_id',
     max_active_runs=1,
     schedule_interval='@hourly',
     default_args=args,
