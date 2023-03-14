@@ -24,8 +24,7 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
     def get_multi_dag_run_xcom_key(execution_date) -> str:
         return f"created_dagrun_key_{execution_date}"
 
-    @provide_session
-    def execute(self, context: t.Dict, session=None):
+    def execute(self, context: Context):
         context.update(self.op_kwargs)
         self.op_kwargs = determine_kwargs(self.python_callable, self.op_args, context)
 
@@ -37,7 +36,7 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
 
             execution_date = timezone.utcnow()
 
-            run_id = conf.get('run_id')
+            run_id = conf.get("run_id")
             if not run_id:
                 run_id = DagRun.generate_run_id(DagRunType.MANUAL, execution_date)
 
@@ -53,29 +52,48 @@ class TriggerMultiDagRunOperator(TriggerDagRunOperator):
                 self.log.info("Created DagRun %s, %s - %s", dag_run, self.trigger_dag_id, run_id)
             else:
                 dag_run = dag_run[0]
-                self.log.warning("Fetched existed DagRun %s, %s - %s", dag_run, self.trigger_dag_id, run_id)
+                self.log.warning(
+                    "Fetched existed DagRun %s, %s - %s", dag_run, self.trigger_dag_id, run_id
+                )
 
             created_dr_ids.append(dag_run.id)
             created_drs.append(dag_run)
 
         if created_dr_ids:
-            xcom_key = get_multi_dag_run_xcom_key(context['execution_date'])
-            context['ti'].xcom_push(xcom_key, created_dr_ids)
+            xcom_key = self.get_multi_dag_run_xcom_key(context["execution_date"])
+            context["ti"].xcom_push(xcom_key, created_dr_ids)
             self.log.info("Pushed %s DagRun's ids with key %s", len(created_dr_ids), xcom_key)
 
             if self.wait_for_completion:
-                # Wait for DAGs to complete...
-                while True:
-                    self.log.info('Waiting for DAGs triggered by %s to complete...', self.trigger_dag_id)
+                failed_dags = {}
+
+                # Hold on while we still have running DAGs...
+                while created_drs:
+                    self.log.info(
+                        "Waiting for DAGs triggered by %s to complete...", self.trigger_dag_id
+                    )
                     time.sleep(self.poke_interval)
 
+                    # Check every running DAG.
                     for dag_run in created_drs:
                         dag_run.refresh_from_db()
                         state = dag_run.state
+
                         if state in self.failed_states:
-                            raise AirflowException(f"{self.trigger_dag_id} failed with failed state: {state}")
-                        if state in self.allowed_states:
-                            self.log.info("%s finished with allowed state %s", self.trigger_dag_id, state)
-                            return
+                            # If the DAG has failed, mark it as such and remove it from list.
+                            failed_dags[self.trigger_dag_id] = state
+                            created_drs.remove(dag_run)
+                        elif state in self.allowed_states:
+                            # If the DAG succeeded, log in the successful event and remove it too.
+                            self.log.info(
+                                "%s finished with allowed state %s", self.trigger_dag_id, state
+                            )
+                            created_drs.remove(dag_run)
+
+                if failed_dags:
+                    # Raise an Airflow exception if any of the DAGs failed.
+                    failures = "; ".join(f"{key}: {value}" for key, value in failed_dags.items())
+                    raise AirflowException(f"Failed DAGs: {failures}")
         else:
             self.log.info("No DagRuns created")
+
