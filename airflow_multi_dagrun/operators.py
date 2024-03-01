@@ -1,6 +1,6 @@
 import typing as t
 
-from airflow.api.common.experimental.trigger_dag import trigger_dag
+from airflow.api.common.trigger_dag import trigger_dag
 from airflow.models import DagRun
 from airflow.operators.trigger_dagrun import TriggerDagRunOperator
 from airflow.utils import timezone

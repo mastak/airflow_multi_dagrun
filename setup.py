@@ -10,6 +10,7 @@ setup(
     version=version,
     description='MultiDagRunPlugin for airflow',
     python_requires='>=3.6.0',
+    install_requires=['apache-airflow>=2.2.4'],
     author='Ihor Liubymov',
     author_email='infunt@gmail.com',
     long_description=long_description,
